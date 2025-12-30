@@ -30,9 +30,9 @@ O sistema permitirá gerir livros, utilizadores e empréstimos, sendo implementa
 
 ## Autores:
 
-![João Félix - 230001131](https://img.shields.io/badge/Autor-João%20Félix-yellow)  
+![João Félix 230001131](https://img.shields.io/badge/Autor-João%20Félix-yellow)  
 
-![João Gouveia - 230000962](https://img.shields.io/badge/Autor-João%20Gouveia-red)
+![João Gouveia 230000962](https://img.shields.io/badge/Autor-João%20Gouveia-red)
 
 ## Referências e Bibliografia:
 ### Aqui estão listados os anexos dos sites utilizados durante a criação deste projeto. 
