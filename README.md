@@ -28,12 +28,12 @@ O sistema permitirá gerir livros, utilizadores e empréstimos, sendo implementa
 - Python: VS Code & PyCharm
 - Java: VS Code & Eclipse
 
-## Autores:
+## 👥 Autores:
 
 ![João Félix 230001131](https://img.shields.io/badge/Autor-João%20Félix-yellow)  
 
 ![João Gouveia 230000962](https://img.shields.io/badge/Autor-João%20Gouveia-red)
 
-## Referências e Bibliografia:
+## 📖 Referências e Apoio:
 ### Aqui estão listados os anexos dos sites utilizados durante a criação deste projeto. 
 vazio
