@@ -1,0 +1,10 @@
+{
+    "livros": [
+        {
+            "id": 1,
+            "titulo": "teste",
+            "autor": "autor",
+            "disponivel": true
+        }
+    ]
+}

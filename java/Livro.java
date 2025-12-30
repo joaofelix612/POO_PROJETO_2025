@@ -12,14 +12,24 @@ public class Livro {
         this.disponivel = true;
     }
 
+    // getters necessários para a Biblioteca
     public int getId() {
         return id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getAutor() {
+        return autor;
     }
 
     public boolean isDisponivel() {
         return disponivel;
     }
 
+    // métodos para emprestar/devolver
     public void emprestar() {
         disponivel = false;
     }
