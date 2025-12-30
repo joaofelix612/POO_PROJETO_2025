@@ -22,7 +22,7 @@ public class Biblioteca {
     //listar livros
     public void listarLivros() {
         if (livros.isEmpty()) {
-            System.out.println("Não existem livros registados.");
+            System.out.println("Nao existem livros registados.");
             return;
         }
 
@@ -36,9 +36,9 @@ public class Biblioteca {
         Livro livro = procurarLivroPorId(id);
 
         if (livro == null) {
-            System.out.println("Livro não encontrado.");
+            System.out.println("Livro nao encontrado.");
         } else if (!livro.isDisponivel()) {
-            System.out.println("Livro já se encontra emprestado.");
+            System.out.println("Livro ja se encontra emprestado.");
         } else {
             livro.emprestar();
             System.out.println("Livro emprestado com sucesso.");
@@ -50,9 +50,9 @@ public class Biblioteca {
         Livro livro = procurarLivroPorId(id);
 
         if (livro == null) {
-            System.out.println("Livro não encontrado.");
+            System.out.println("Livro nao encontrado.");
         } else if (livro.isDisponivel()) {
-            System.out.println("Este livro já está disponível.");
+            System.out.println("Este livro ja esta disponivel.");
         } else {
             livro.devolver();
             System.out.println("Livro devolvido com sucesso.");

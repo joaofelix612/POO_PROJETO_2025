@@ -10,13 +10,13 @@ public class Main {
         int opcao;
 
         do {
-            System.out.println("\n=== Sistema de Gestão de Biblioteca ===");
+            System.out.println("\n| Sistema de Gestao de Biblioteca |");
             System.out.println("1 - Listar livros");
             System.out.println("2 - Adicionar livro");
             System.out.println("3 - Emprestar livro");
             System.out.println("4 - Devolver livro");
             System.out.println("0 - Sair");
-            System.out.print("Opção: ");
+            System.out.print("Opcao: ");
 
             opcao = scanner.nextInt();
             scanner.nextLine(); // limpar buffer
@@ -27,7 +27,7 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.print("Título: ");
+                    System.out.print("Titulo: ");
                     String titulo = scanner.nextLine();
 
                     System.out.print("Autor: ");
@@ -53,7 +53,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Opção inválida!");
+                    System.out.println("Opcao invalida!");
             }
 
         } while (opcao != 0);
