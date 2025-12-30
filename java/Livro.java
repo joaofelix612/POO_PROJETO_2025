@@ -43,6 +43,6 @@ public class Livro {
         return "ID: " + id +
                " | Titulo: " + titulo +
                " | Autor: " + autor +
-               " | Disponivel: " + (disponivel ? "Sim" : "Não");
+               " | Disponivel: " + (disponivel ? "Sim" : "Nao");
     }
 }
