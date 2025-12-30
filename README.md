@@ -1,15 +1,15 @@
-# Sistema de Gestão de uma Biblioteca
+# 📚 Sistema de Gestão de uma Biblioteca
 Repositório para o projeto final da disciplina de Programação Orientada a Objetos
 
 ![alt text](Imagens(ignorar)/logo_uni.png)
 
-## Ideia Geral do Projeto:
+## 📌 Ideia Geral do Projeto:
 ### Nome do Projeto: Sistema de Gestão de Biblioteca (SGB)
 Objetivo Geral:
 Desenvolver um sistema de gestão de uma biblioteca, aplicando os conceitos fundamentais de Programação Orientada a Objetos (POO).
 O sistema permitirá gerir livros, utilizadores e empréstimos, sendo implementado em Python e Java, de forma a comparar e consolidar conhecimentos em ambas as linguagens.
 
-### Funcionalidades Principais:
+### 🧩 Funcionalidades Principais:
 
 - Registo de livros
 - Registo de utilizadores
@@ -18,7 +18,7 @@ O sistema permitirá gerir livros, utilizadores e empréstimos, sendo implementa
 - Consulta do estado dos livros (disponível / emprestado)
 - Listagem de livros e utilizadores
 
-### Tecnologias Utilizadas:
+### 💻 Tecnologias Utilizadas:
 **Linguagens de Programação:**
 - Python 3
 - Java (JDK 8 ou superior)
