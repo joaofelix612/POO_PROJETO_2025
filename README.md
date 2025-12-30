@@ -1,7 +1,7 @@
 # Sistema de Gestão de uma Biblioteca
 Repositório para o projeto final da disciplina de Programação Orientada a Objetos
 
-![alt text](Imagens-PNGs/image-removebg-preview.png)
+![alt text](Imagens(ignorar)/logo_uni.png)
 
 ## Ideia Geral do Projeto:
 ### Nome do Projeto: Sistema de Gestão de Biblioteca (SGB)
