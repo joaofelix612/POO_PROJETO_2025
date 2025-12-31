@@ -51,3 +51,4 @@ https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals
 https://hub.asimov.academy/tutorial/lendo-e-escrevendo-arquivos-json-em-python
 https://www.oracle.com/br/technical-resources/articles/java/api-java-to-json.html
 https://www.w3schools.com/java/java_ref_reference.asp
+(Entre outros)
