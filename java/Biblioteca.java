@@ -1,142 +1,148 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Biblioteca {
 
     private ArrayList<Livro> livros;
-    private int proximoId;
-    private static final String PYTHON_SCRIPT = "python/gestor_json.py"; // caminho do script python
+    private ArrayList<Utilizador> utilizadores;
+    private int proximoLivroId;
+    private int proximoUtilizadorId;
+    private static final String PYTHON_SCRIPT = "python/gestor_json.py";
 
     public Biblioteca() {
         livros = new ArrayList<>();
-        proximoId = 1;
-        carregarLivrosDoJSON(); // carrega livros do json ao iniciar
+        utilizadores = new ArrayList<>();
+        proximoLivroId = 1;
+        proximoUtilizadorId = 1;
+        carregarDadosJSON();
     }
 
-    //adicionar livro
+    // Livros
     public void adicionarLivro(String titulo, String autor) {
-        Livro livro = new Livro(proximoId, titulo, autor);
+        Livro livro = new Livro(proximoLivroId++, titulo, autor);
         livros.add(livro);
-        proximoId++;
         System.out.println("Livro adicionado com sucesso!");
-        guardarLivrosNoJSON(); // guarda automaticamente
+        guardarDadosJSON();
     }
 
-    //listar livros
     public void listarLivros() {
-        if (livros.isEmpty()) {
+        if(livros.isEmpty()) {
             System.out.println("Nao existem livros registados.");
             return;
         }
-
-        for (Livro livro : livros) {
-            System.out.println(livro);
-        }
+        for(Livro l : livros) System.out.println(l);
     }
 
-    // emprestar livro
-    public void emprestarLivro(int id) {
-        Livro livro = procurarLivroPorId(id);
+    public void emprestarLivro(int livroId, int utilizadorId) {
+        Livro livro = procurarLivroPorId(livroId);
+        Utilizador user = procurarUtilizadorPorId(utilizadorId);
 
-        if (livro == null) {
-            System.out.println("Livro nao encontrado.");
-        } else if (!livro.isDisponivel()) {
-            System.out.println("Livro ja se encontra emprestado.");
-        } else {
-            livro.emprestar();
-            System.out.println("Livro emprestado com sucesso.");
-            guardarLivrosNoJSON(); // guarda depois do emprestimo
-        }
+        if(livro == null) { System.out.println("Livro nao encontrado."); return; }
+        if(user == null) { System.out.println("Utilizador nao encontrado."); return; }
+        if(!livro.isDisponivel()) { System.out.println("Livro ja esta emprestado."); return; }
+
+        livro.emprestar(utilizadorId);
+        System.out.println("Livro emprestado com sucesso.");
+        guardarDadosJSON();
     }
 
-    // devolver livro
-    public void devolverLivro(int id) {
-        Livro livro = procurarLivroPorId(id);
-
-        if (livro == null) {
-            System.out.println("Livro nao encontrado.");
-        } else if (livro.isDisponivel()) {
-            System.out.println("Este livro ja esta disponivel.");
-        } else {
-            livro.devolver();
-            System.out.println("Livro devolvido com sucesso.");
-            guardarLivrosNoJSON(); // guarda depois de devolver
+    public void devolverLivro(int livroId, int utilizadorId) {
+        Livro livro = procurarLivroPorId(livroId);
+        if(livro == null) { System.out.println("Livro nao encontrado."); return; }
+        if(livro.isDisponivel() || livro.getEmprestadoPara() != utilizadorId) {
+            System.out.println("Este livro nao esta emprestado a este utilizador.");
+            return;
         }
+
+        livro.devolver();
+        System.out.println("Livro devolvido com sucesso.");
+        guardarDadosJSON();
     }
 
-    //metodo auxiliar para procurar livro pelo id
     private Livro procurarLivroPorId(int id) {
-        for (Livro livro : livros) {
-            if (livro.getId() == id) {
-                return livro;
-            }
-        }
+        for(Livro l : livros) if(l.getId() == id) return l;
         return null;
     }
 
-    // -------------------------
-    // integração do python
-    // -------------------------
+    // Utilizadores
+    public void adicionarUtilizador(String nome) {
+        Utilizador u = new Utilizador(proximoUtilizadorId++, nome);
+        utilizadores.add(u);
+        System.out.println("Utilizador adicionado com sucesso!");
+        guardarDadosJSON();
+    }
 
-    private void carregarLivrosDoJSON() {
+    public void listarUtilizadores() {
+        if(utilizadores.isEmpty()) {
+            System.out.println("Nao existem utilizadores registados.");
+            return;
+        }
+        for(Utilizador u : utilizadores) System.out.println(u);
+    }
+
+    private Utilizador procurarUtilizadorPorId(int id) {
+        for(Utilizador u : utilizadores) if(u.getId() == id) return u;
+        return null;
+    }
+
+    // Integracao Python
+    private void carregarDadosJSON() {
         try {
-            // chama o python para carregar livros
             ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "carregar");
             Process process = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String linha;
-            while ((linha = reader.readLine()) != null) {
-                // cada linha é um livro no formato id,titulo,autor,disponivel
+            while((linha = reader.readLine()) != null) {
                 String[] partes = linha.split(",");
-                if (partes.length == 4) {
+                if(partes.length >= 5) { // id,titulo,autor,disponivel,emprestadoPara
                     int id = Integer.parseInt(partes[0]);
                     String titulo = partes[1];
                     String autor = partes[2];
                     boolean disponivel = Boolean.parseBoolean(partes[3]);
+                    String emprestadoParaStr = partes[4];
+                    Integer emprestadoPara = emprestadoParaStr.equals("null") ? null : Integer.parseInt(emprestadoParaStr);
 
                     Livro livro = new Livro(id, titulo, autor);
-                    if (!disponivel) {
-                        livro.emprestar(); // se não disponível, marca como emprestado
-                    }
+                    if(!disponivel) livro.emprestar(emprestadoPara);
                     livros.add(livro);
 
-                    if (id >= proximoId) {
-                        proximoId = id + 1; // atualiza proximoId automaticamente
-                    }
+                    if(id >= proximoLivroId) proximoLivroId = id+1;
                 }
             }
 
-        } catch (Exception e) {
-            System.out.println("Nao foi possivel carregar os livros do JSON.");
-            // e.printStackTrace(); // opcional para debug
+        } catch(Exception e) {
+            System.out.println("Nao foi possivel carregar os dados do JSON.");
         }
     }
 
-    private void guardarLivrosNoJSON() {
+   private void guardarDadosJSON() {
     try {
         ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "guardar");
         Process process = pb.start();
 
-        // escreve os livros para o stdin do Python
-        StringBuilder sb = new StringBuilder();
-        for (Livro livro : livros) {
-            sb.append(livro.getId()).append(",")
-              .append(livro.getTitulo()).append(",")
-              .append(livro.getAutor()).append(",")
-              .append(livro.isDisponivel()).append("\n");
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+
+        // envia livros
+        for(Livro l : livros) {
+            writer.write(l.getId() + "," + l.getTitulo() + "," + l.getAutor() + "," + l.isDisponivel() + "," +
+                         (l.getEmprestadoPara() == null ? "null" : l.getEmprestadoPara()));
+            writer.newLine();
         }
 
-        process.getOutputStream().write(sb.toString().getBytes());
-        process.getOutputStream().flush();
-        process.getOutputStream().close();
+        // envia utilizadores
+        for(Utilizador u : utilizadores) {
+            writer.write("U," + u.getId() + "," + u.getNome());
+            writer.newLine();
+        }
 
+        writer.flush();
+        writer.close();
         process.waitFor();
 
-    } catch (Exception e) {
-        System.out.println("Nao foi possivel guardar os livros no JSON.");
-        // e.printStackTrace(); // opcional debug
+    } catch(Exception e) {
+        System.out.println("Nao foi possivel guardar os dados no JSON.");
+        e.printStackTrace();
     }
-}
+ }
 }
