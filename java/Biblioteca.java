@@ -7,7 +7,8 @@ public class Biblioteca {
     private ArrayList<Utilizador> utilizadores;
     private int proximoLivroId;
     private int proximoUtilizadorId;
-    private static final String PYTHON_SCRIPT = "python/gestor_json.py";
+    private static final String PYTHON_SCRIPT =
+        new File("python/gestor_json.py").getAbsolutePath();
 
     public Biblioteca() {
         livros = new ArrayList<>();
@@ -86,35 +87,80 @@ public class Biblioteca {
     }
 
     // Integracao Python
-    private void carregarDadosJSON() {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "carregar");
-            Process process = pb.start();
+ private void carregarDadosJSON() {
+    try {
+        livros.clear();
+        utilizadores.clear();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String linha;
-            while((linha = reader.readLine()) != null) {
-                String[] partes = linha.split(",");
-                if(partes.length >= 5) { // id,titulo,autor,disponivel,emprestadoPara
-                    int id = Integer.parseInt(partes[0]);
-                    String titulo = partes[1];
-                    String autor = partes[2];
-                    boolean disponivel = Boolean.parseBoolean(partes[3]);
-                    String emprestadoParaStr = partes[4];
-                    Integer emprestadoPara = emprestadoParaStr.equals("null") ? null : Integer.parseInt(emprestadoParaStr);
+        //livros
+        ProcessBuilder pbLivros = new ProcessBuilder(
+                "python",
+                PYTHON_SCRIPT,
+                "carregar_livros"
+        );
 
-                    Livro livro = new Livro(id, titulo, autor);
-                    if(!disponivel) livro.emprestar(emprestadoPara);
-                    livros.add(livro);
+        pbLivros.redirectErrorStream(true); 
+        Process pLivros = pbLivros.start();
 
-                    if(id >= proximoLivroId) proximoLivroId = id+1;
-                }
-            }
+        BufferedReader readerLivros =
+                new BufferedReader(new InputStreamReader(pLivros.getInputStream()));
 
-        } catch(Exception e) {
-            System.out.println("Nao foi possivel carregar os dados do JSON.");
+        String linha;
+        while ((linha = readerLivros.readLine()) != null) {
+            System.out.println("DEBUG LIVRO -> " + linha); //debuging
+
+            String[] p = linha.split(",");
+            int id = Integer.parseInt(p[0]);
+            String titulo = p[1];
+            String autor = p[2];
+
+            boolean disponivel = p[3].equalsIgnoreCase("true");
+            Integer emprestadoPara =
+                    (p.length > 4 && !p[4].equals("null")) ? Integer.parseInt(p[4]) : null;
+
+            Livro l = new Livro(id, titulo, autor);
+            if (!disponivel) l.emprestar(emprestadoPara);
+            livros.add(l);
+
+            if (id >= proximoLivroId) proximoLivroId = id + 1;
         }
+
+        pLivros.waitFor();
+
+        // utilizador
+        ProcessBuilder pbUsers = new ProcessBuilder(
+                "python",
+                PYTHON_SCRIPT,
+                "carregar_utilizadores"
+        );
+
+        pbUsers.redirectErrorStream(true);
+        Process pUsers = pbUsers.start();
+
+        BufferedReader readerUsers =
+                new BufferedReader(new InputStreamReader(pUsers.getInputStream()));
+
+        while ((linha = readerUsers.readLine()) != null) {
+            System.out.println("DEBUG USER -> " + linha); //debugging
+
+            String[] p = linha.split(",");
+            int id = Integer.parseInt(p[0]);
+            String nome = p[1];
+
+            utilizadores.add(new Utilizador(id, nome));
+
+            if (id >= proximoUtilizadorId) proximoUtilizadorId = id + 1;
+        }
+
+        pUsers.waitFor();
+
+    } catch (Exception e) {
+        System.out.println("Erro ao carregar dados do JSON.");
+        e.printStackTrace();
     }
+}
+
+
 
    private void guardarDadosJSON() {
     try {
